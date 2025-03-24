@@ -24,7 +24,7 @@ jobs:
       - name: Build with Maven
         run: mvn clean install
 
-      - name: Copy openai-code-review-sdk Jar
+      - name: Copy openai-code-review-sdk JAR
         run: mvn dependency:copy -Dartifact=icu.flycode:openai-code-review-sdk:1.0 -DoutputDirectory=./libs
 
       - name: Run OpenAiCodeReview
