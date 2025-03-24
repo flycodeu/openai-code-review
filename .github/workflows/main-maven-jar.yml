@@ -28,4 +28,4 @@ jobs:
         run: mvn dependency:copy -Dartifact=icu.flycode:openai-code-review-sdk:1.0 -DoutputDirectory=./libs
 
       - name: Run OpenAiCodeReview
-        run: java jar ./libs/openai-code-review-sdk-1.0.jar
+        run: java -jar ./libs/openai-code-review-sdk-1.0.jar
