@@ -46,7 +46,7 @@ public class OpenAiCodeReview {
         String apiKey = "046183b32b904844949bd062b1ab223c.MEgwXNBvYeLMvd51";
         String token = BearerTokenUtils.getToken(apiKey);
 
-        URL url = new URL("  https://open.bigmodel.cn/api/paas/v4/chat/completions");
+        URL url = new URL("https://open.bigmodel.cn/api/paas/v4/chat/completions");
         HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
         httpsURLConnection.setRequestMethod("POST");
         httpsURLConnection.setRequestProperty("Authorization", "Bearer " + token);
