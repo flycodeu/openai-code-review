@@ -37,8 +37,8 @@ public class OpenAiCodeReview {
 
 
         // 4. 调用OpenAI API进行代码评审
-//        String codedReview = codeReview(diffStr.toString());
-//        System.out.println("Code review: " + codedReview);
+        String codedReview = codeReview(diffStr.toString());
+        System.out.println("Code review: " + codedReview);
     }
 
 
