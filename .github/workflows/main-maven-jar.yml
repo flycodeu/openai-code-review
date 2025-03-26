@@ -20,10 +20,10 @@ jobs:
         with:
           distribution: 'adopt'
           java-version: '11'
-
+      # maven构建
       - name: Build with Maven
         run: mvn clean install
-
+      # 复制OpenAI自动评审组件jar包到Github服务器的libs目录下
       - name: Copy openai-code-review-sdk JAR
         run: mvn dependency:copy -Dartifact=icu.flycode:openai-code-review-sdk:1.0 -DoutputDirectory=./libs
 

@@ -52,38 +52,49 @@
         </dependency>
     </dependencies>
 
-
     <build>
+        <finalName>openai-code-review-test</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/**</include>
+                </includes>
+            </resource>
+        </resources>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/**</include>
+                </includes>
+            </testResource>
+        </testResources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.4.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.6</version>
                 <configuration>
-                    <artifactSet>
-                        <!--配置在打包中需要同时打包的jar-->
-                        <includes>
-                            <include>com.google.guava:guava:jar:</include>
-                            <include>com.alibaba.fastjson2:fastjson2:jar:</include>
-                            <include>org.slf4j:slf4j-api:jar:</include>
-                            <include>org.slf4j:slf4j-simple:jar:</include>
-                            <include>com.auth0:java-jwt:jar:</include>
-                            <include>com.fasterxml.jackson.core:jackson-core:</include>
-                            <include>com.fasterxml.jackson.core:jackson-databind:</include>
-                            <include>com.fasterxml.jackson.core:jackson-annotations:</include>
-                            <include>org.eclipse.jgit:org.eclipse.jgit:</include>
-                        </includes>
-                    </artifactSet>
+                    <skipTests>true</skipTests>
+                    <testFailureIgnore>false</testFailureIgnore>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>icu.flycode.sdk.test.Application</mainClass>
+                    <layout>JAR</layout>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+
 </project>
