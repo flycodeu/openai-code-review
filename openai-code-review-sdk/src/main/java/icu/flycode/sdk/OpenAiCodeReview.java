@@ -46,13 +46,7 @@ public class OpenAiCodeReview {
         String apiKey = "046183b32b904844949bd062b1ab223c.MEgwXNBvYeLMvd51";
         String token = BearerTokenUtils.getToken(apiKey);
 
-        URL url = new URL("https://open.bigmodel.cn/api/paas/v4/chat/completions");
-        HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
-        httpsURLConnection.setRequestMethod("POST");
-        httpsURLConnection.setRequestProperty("Authorization", "Bearer " + token);
-        httpsURLConnection.setRequestProperty("Content-Type", "application/json");
-        httpsURLConnection.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-        httpsURLConnection.setDoOutput(true);
+        HttpsURLConnection httpsURLConnection = getHttpsURLConnection(token);
 
         String jsonInputString = "{"
                 + "\"model\":\"glm-4-flash\","
@@ -98,5 +92,16 @@ public class OpenAiCodeReview {
         String returnContent = chatCompletionSyncResponse.getChoices().get(0).getMessage().getContent();
 
         return returnContent;
+    }
+
+    private static HttpsURLConnection getHttpsURLConnection(String token) throws IOException {
+        URL url = new URL("https://open.bigmodel.cn/api/paas/v4/chat/completions");
+        HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
+        httpsURLConnection.setRequestMethod("POST");
+        httpsURLConnection.setRequestProperty("Authorization", "Bearer " + token);
+        httpsURLConnection.setRequestProperty("Content-Type", "application/json");
+        httpsURLConnection.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+        httpsURLConnection.setDoOutput(true);
+        return httpsURLConnection;
     }
 }
