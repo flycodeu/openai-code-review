@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Message {
-
-    private String touser = "or0Ab6ivwmypESVp_bYuk92T6SvU";
-    private String template_id = "GLlAM-Q4jdgsktdNd35hnEbHVam2mwsW2YWuxDhpQkU";
-    private String url = "https://weixin.qq.com";
+    // 发送给指定用户
+    private String touser = "oNbqZ6vShgDLdznFaExcZl0yJCz8";
+    // 模板id
+    private String template_id = "TfCvx0efPjZz6-nZDZjcUzwGplSw7R60RC_z1pPpREU";
+    // 用户点击可以跳转指定链接
+    private String url = "https://github.com/flycodeu/openai-code-review-logs.git";
     private Map<String, Map<String, String>> data = new HashMap<>();
 
     public void put(String key, String value) {

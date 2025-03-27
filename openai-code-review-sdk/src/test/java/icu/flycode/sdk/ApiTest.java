@@ -2,7 +2,9 @@ package icu.flycode.sdk;
 
 import com.alibaba.fastjson2.JSON;
 import icu.flycode.sdk.domain.models.ChatCompletionSyncResponse;
+import icu.flycode.sdk.domain.models.Message;
 import icu.flycode.sdk.utils.BearerTokenUtils;
+import icu.flycode.sdk.utils.WXAccessTokenUtils;
 import org.junit.Test;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -10,9 +12,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Scanner;
 
 
 public class ApiTest {
@@ -47,7 +52,6 @@ public class ApiTest {
                 + "}";
 
 
-
         try (OutputStream os = httpsURLConnection.getOutputStream()) {
             byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
@@ -72,4 +76,42 @@ public class ApiTest {
         System.out.println(returnContent);
 
     }
+
+
+    @Test
+    public void test_wx() {
+        String accessToken = WXAccessTokenUtils.getAccessToken();
+        System.out.println("accessToken:" + accessToken);
+
+        Message message = new Message();
+        message.put("project", "测试项目");
+        message.put("review", "测试内容");
+        String url = String.format("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s", accessToken);
+        sendPostRequest(url, JSON.toJSONString(message));
+
+    }
+
+    private static void sendPostRequest(String urlString, String jsonBody) {
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json; utf-8");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setDoOutput(true);
+
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = jsonBody.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+            }
+
+            try (Scanner scanner = new Scanner(conn.getInputStream(), StandardCharsets.UTF_8.name())) {
+                String response = scanner.useDelimiter("\\A").next();
+                System.out.println(response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

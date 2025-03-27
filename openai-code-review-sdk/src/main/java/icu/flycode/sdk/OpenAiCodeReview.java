@@ -3,20 +3,24 @@ package icu.flycode.sdk;
 import com.alibaba.fastjson2.JSON;
 import icu.flycode.sdk.domain.models.ChatCompletionRequest;
 import icu.flycode.sdk.domain.models.ChatCompletionSyncResponse;
+import icu.flycode.sdk.domain.models.Message;
 import icu.flycode.sdk.domain.models.Model;
 import icu.flycode.sdk.utils.BearerTokenUtils;
+import icu.flycode.sdk.utils.WXAccessTokenUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.logging.SimpleFormatter;
 
 public class OpenAiCodeReview {
@@ -54,7 +58,11 @@ public class OpenAiCodeReview {
 
         // 5. 写入日志
         String logsUrl = writeLogs(token, codedReview);
-        System.out.println(logsUrl);
+        System.out.println("logs write:"+logsUrl);
+
+        // 6. 调用公众号
+        pushMessage(logsUrl);
+        System.out.println("Message pushed:"+logsUrl);
     }
 
 
@@ -168,4 +176,38 @@ public class OpenAiCodeReview {
         return sb.toString();
     }
 
+
+    public static void pushMessage(String logUrl) {
+        String accessToken = WXAccessTokenUtils.getAccessToken();
+        System.out.println("accessToken:" + accessToken);
+
+        Message message = new Message();
+        message.put("project", "openai-code-review-logs");
+        message.put("review", logUrl);
+        String url = String.format("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s", accessToken);
+        sendPostRequest(url, JSON.toJSONString(message));
+    }
+
+    private static void sendPostRequest(String urlString, String jsonBody) {
+        try {
+            URL url = new URL(urlString);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json; utf-8");
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setDoOutput(true);
+
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = jsonBody.getBytes(StandardCharsets.UTF_8);
+                os.write(input, 0, input.length);
+            }
+
+            try (Scanner scanner = new Scanner(conn.getInputStream(), StandardCharsets.UTF_8.name())) {
+                String response = scanner.useDelimiter("\\A").next();
+                System.out.println(response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
