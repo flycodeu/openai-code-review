@@ -22,7 +22,7 @@ import java.util.logging.SimpleFormatter;
 public class OpenAiCodeReview {
     public static void main(String[] args) throws Exception {
         System.out.println("openai代码评审");
-        String token = System.getenv("GitHub_Token");
+        String token = System.getenv("GITHUB_TOKEN");
         if (null == token || token.isEmpty()) {
             throw new RuntimeException("GitHub_Token is empty");
         }
