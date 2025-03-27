@@ -5,16 +5,28 @@ import icu.flycode.sdk.domain.models.ChatCompletionRequest;
 import icu.flycode.sdk.domain.models.ChatCompletionSyncResponse;
 import icu.flycode.sdk.domain.models.Model;
 import icu.flycode.sdk.utils.BearerTokenUtils;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Random;
+import java.util.logging.SimpleFormatter;
 
 public class OpenAiCodeReview {
     public static void main(String[] args) throws Exception {
-        System.out.println("测试执行");
+        System.out.println("openai代码评审");
+        String token = System.getenv("GitHub_Token");
+        if (null == token || token.isEmpty()) {
+            throw new RuntimeException("GitHub_Token is empty");
+        }
+
         // 代码评审
         // 1. 读取Git Diff更改记录
         ProcessBuilder processBuilder = new ProcessBuilder("git", "diff", "HEAD~1", "HEAD");
@@ -39,6 +51,10 @@ public class OpenAiCodeReview {
         // 4. 调用OpenAI API进行代码评审
         String codedReview = codeReview(diffStr.toString());
         System.out.println("Code review: " + codedReview);
+
+        // 5. 写入日志
+        String logsUrl = writeLogs(token, codedReview);
+        System.out.println(logsUrl);
     }
 
 
@@ -51,10 +67,10 @@ public class OpenAiCodeReview {
 
         ChatCompletionRequest chatCompletionRequest = new ChatCompletionRequest();
         chatCompletionRequest.setModel(Model.GLM_4_FLASH.getCode());
-        chatCompletionRequest.setMessages(new ArrayList<ChatCompletionRequest.Prompt>(){
+        chatCompletionRequest.setMessages(new ArrayList<ChatCompletionRequest.Prompt>() {
             {
-                add(new ChatCompletionRequest.Prompt("user","你是一个高级编程架构师，精通各类场景方案、架构设计和编程语言请，请您根据git diff记录，对代码做出评审。代码为: "));
-                add(new ChatCompletionRequest.Prompt("user",diffCode));
+                add(new ChatCompletionRequest.Prompt("user", "你是一个高级编程架构师，精通各类场景方案、架构设计和编程语言请，请您根据git diff记录，对代码做出评审。代码为: "));
+                add(new ChatCompletionRequest.Prompt("user", diffCode));
             }
         });
 
@@ -93,4 +109,63 @@ public class OpenAiCodeReview {
         httpsURLConnection.setDoOutput(true);
         return httpsURLConnection;
     }
+
+    /**
+     * 写入日志到指定仓库
+     *
+     * @param token
+     * @param log
+     * @return
+     * @throws GitAPIException
+     */
+    private static String writeLogs(String token, String log) throws GitAPIException {
+        // 1. 连接Git仓库
+        Git git = Git.cloneRepository()
+                .setURI("https://github.com/flycodeu/openai-code-review-logs.git")
+                .setDirectory(new File("repo"))
+                .setCredentialsProvider(new UsernamePasswordCredentialsProvider(token, ""))
+                .call();
+
+        // 2. 创建文件夹
+        String dateFolderName = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        File dateFolder = new File("repo/" + dateFolderName);
+        if (!dateFolder.exists()) {
+            dateFolder.mkdirs();
+        }
+
+        // 3. 写入日志文件
+        String fileName = generateRandomString(12) + ".md";
+        File file = new File(dateFolder, fileName);
+        try (FileWriter writer = new FileWriter(file)) {
+            writer.write(log);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // 4. 提交并推送更改
+        git.add().addFilepattern(dateFolderName + "/" + fileName).call();
+        git.commit().setMessage("Add new log via Github Actions").call();
+        git.push().setCredentialsProvider(new UsernamePasswordCredentialsProvider(token, ""));
+
+        return "https://github.com/flycodeu/openai-code-review-logs/blob/master/" + dateFolderName + "/" + fileName;
+
+    }
+
+
+    /**
+     * 随机字母作为名称
+     *
+     * @param length
+     * @return
+     */
+    private static String generateRandomString(int length) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            sb.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        return sb.toString();
+    }
+
 }
