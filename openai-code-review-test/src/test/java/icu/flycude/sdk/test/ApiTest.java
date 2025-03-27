@@ -10,12 +10,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ApiTest {
-    
+
     @Test
-    public void test(){
+    public void test() {
         System.out.println(Integer.parseInt("aaa1"));
         System.out.println(Integer.parseInt("111"));
         System.out.println(Integer.parseInt("s221"));
         System.out.println(Integer.parseInt("a+a"));
+        System.out.println( 0 == 1);
     }
 }
