@@ -145,7 +145,7 @@ public class OpenAiCodeReview {
         // 4. 提交并推送更改
         git.add().addFilepattern(dateFolderName + "/" + fileName).call();
         git.commit().setMessage("Add new log via Github Actions").call();
-        git.push().setCredentialsProvider(new UsernamePasswordCredentialsProvider(token, ""));
+        git.push().setCredentialsProvider(new UsernamePasswordCredentialsProvider(token, "")).call();
 
         return "https://github.com/flycodeu/openai-code-review-logs/blob/master/" + dateFolderName + "/" + fileName;
 
