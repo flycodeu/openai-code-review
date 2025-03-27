@@ -16,5 +16,6 @@ public class ApiTest {
         System.out.println(Integer.parseInt("aaa1"));
         System.out.println(Integer.parseInt("111"));
         System.out.println(Integer.parseInt("s221"));
+        System.out.println(Integer.parseInt("a+a"));
     }
 }
