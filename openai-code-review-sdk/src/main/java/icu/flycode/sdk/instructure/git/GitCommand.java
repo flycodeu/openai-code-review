@@ -96,6 +96,8 @@ public class GitCommand {
      * @throws Exception
      */
     public String commitAndPush(String recommend) throws Exception {
+        System.out.println(githubToken);
+        System.out.println(githubReviewUrl);
         // 1. 连接Git仓库
         Git git = Git.cloneRepository()
                 .setURI(githubReviewUrl + ".git")
