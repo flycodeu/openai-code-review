@@ -54,7 +54,7 @@ public class OpenAiCodeReview {
     public static void main(String[] args) {
         GitCommand gitCommand = new GitCommand(
                 getEnv("GITHUB_REVIEW_URL"),
-                "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",
+                "GitHub_Token",
                 getEnv("COMMIT_AUTHOR"),
                 getEnv("COMMIT_BRANCH"),
                 getEnv("COMMIT_PROJECT"),
