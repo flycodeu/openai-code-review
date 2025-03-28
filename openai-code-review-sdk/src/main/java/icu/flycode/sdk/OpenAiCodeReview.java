@@ -54,7 +54,7 @@ public class OpenAiCodeReview {
     public static void main(String[] args) {
         GitCommand gitCommand = new GitCommand(
                 getEnv("GITHUB_REVIEW_URL"),
-                github_token,
+                "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",
                 getEnv("COMMIT_AUTHOR"),
                 getEnv("COMMIT_BRANCH"),
                 getEnv("COMMIT_PROJECT"),
@@ -82,7 +82,7 @@ public class OpenAiCodeReview {
     public static String getEnv(String key) {
         String token = System.getenv(key);
         if (null == token || token.isEmpty()) {
-            throw new RuntimeException("GitHub_Token is empty");
+            throw new RuntimeException(key+":value is empty");
         }
         return token;
     }
