@@ -31,6 +31,7 @@ public class ChatGLM implements IOpenAI {
         String token = BearerTokenUtils.getToken(apiKey);
         // 2. 发送请求
         URL url = new URL(apiHost);
+        System.out.println(url);
         HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
         httpsURLConnection.setRequestMethod("POST");
         httpsURLConnection.setRequestProperty("Authorization", "Bearer " + token);
