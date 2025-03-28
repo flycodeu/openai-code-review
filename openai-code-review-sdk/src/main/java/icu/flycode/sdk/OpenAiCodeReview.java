@@ -44,7 +44,7 @@ public class OpenAiCodeReview {
     private String github_review_url = "";
 
     // Github配置
-    private String github_token = "";
+    private String github_token = "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";
 
     private String github_project;
     private String github_branch;
