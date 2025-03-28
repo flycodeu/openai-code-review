@@ -28,10 +28,13 @@ public abstract class AbstractOpenAiCodeReviewService implements IOpenAiCodeRevi
         try {
             // 1.获取提交代码
             String diffCode = getDiffCode();
+            logger.info("openai-code-review diffCode:{}", diffCode);
             // 2. 开始评审代码
             String recommend = codeReview(diffCode);
+            logger.info("openai-code-review recommend:{}", recommend);
             // 3. 记录评审日志，返回日志地址
             String logUrl = recordCodeReview(recommend);
+            logger.info("openai-code-review logUrl:{}", logUrl);
             // 4. 发送消息通知
             pushMessage(logUrl);
         }catch (Exception e){
