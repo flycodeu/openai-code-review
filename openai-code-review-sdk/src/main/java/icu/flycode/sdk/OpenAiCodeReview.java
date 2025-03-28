@@ -44,7 +44,7 @@ public class OpenAiCodeReview {
     private String github_review_url = "";
 
     // Github配置
-    private String github_token = "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";
+    private static String github_token = "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";
 
     private String github_project;
     private String github_branch;
@@ -54,7 +54,7 @@ public class OpenAiCodeReview {
     public static void main(String[] args) {
         GitCommand gitCommand = new GitCommand(
                 getEnv("GITHUB_REVIEW_URL"),
-                getEnv("GITHUB_TOKEN"),
+                github_token,
                 getEnv("COMMIT_AUTHOR"),
                 getEnv("COMMIT_BRANCH"),
                 getEnv("COMMIT_PROJECT"),
