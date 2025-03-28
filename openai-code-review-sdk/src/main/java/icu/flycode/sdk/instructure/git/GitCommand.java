@@ -124,7 +124,7 @@ public class GitCommand {
         git.push().setCredentialsProvider(new UsernamePasswordCredentialsProvider(githubToken, "")).call();
         logger.info("openai-code-review git commit and push done! {}", fileName);
 
-        return githubReviewUrl + "/blob/master" + dateFolderName + "/" + fileName;
+        return githubReviewUrl + "/blob/master/" + dateFolderName + "/" + fileName;
     }
 
     public String getAuthor() {
