@@ -27,6 +27,10 @@ jobs:
       - name: Copy openai-code-review-sdk JAR
         run: mvn dependency:copy -Dartifact=icu.flycode:openai-code-review-sdk:1.0 -DoutputDirectory=./libs
 
+      - name: Get repository name
+        id: repo-name
+        run: echo "REPO_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
+
       - name: Get branch name
         id: branch-name
         run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
