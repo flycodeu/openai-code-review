@@ -33,23 +33,22 @@ import java.util.logging.SimpleFormatter;
 public class OpenAiCodeReview {
     private static final Logger logger = LoggerFactory.getLogger(OpenAiCodeReview.class);
     // 微信配置
-    private String weixin_appid = "wxa6a853b4727a89c3";
-    private String weixin_secret = "c79ba38e3570992b3904d35c57fb75e8";
-    private String wexin_touser = "oNbqZ6vShgDLdznFaExcZl0yJCz8";
-    private String weixin_template_id = "wmbDl-7QVjrOL01D5eqFo--9_rYd-hLGciU1L2lsnVA";
-
-    // GLM配置
-    private String chatglm_apiHost = "";
-    private String chatglm_apiKey = "";
-    private String github_review_url = "";
+    private static String weixin_appid = "wxa6a853b4727a89c3";
+    private static String weixin_secret = "c79ba38e3570992b3904d35c57fb75e8";
+    private static String wexin_touser = "oNbqZ6vShgDLdznFaExcZl0yJCz8";
+    private static String weixin_template_id = "wmbDl-7QVjrOL01D5eqFo--9_rYd-hLGciU1L2lsnVA";
+    // GLM配置static
+    private static String chatglm_apiHost = "https://open.bigmodel.cn/api/paas/v4/chat/completions";
+    private static String chatglm_apiKey = "046183b32b904844949bd062b1ab223c.MEgwXNBvYeLMvd51";
+    private static String github_review_url = "https://github.com/flycodeu/openai-code-review-logs";
 
     // Github配置
     private static String github_token = "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";
 
-    private String github_project;
-    private String github_branch;
-
-    private String github_author;
+    private static String github_project = "test";
+    private static String github_branch = "master";
+    private static String github_author = "flycodeu";
+    private static String github_message = "xxxx";
 
     public static void main(String[] args) {
         GitCommand gitCommand = new GitCommand(
@@ -69,9 +68,30 @@ public class OpenAiCodeReview {
         );
 
         IOpenAI chatGLM = new ChatGLM(
-                getEnv("CHATGLM_APIHOST"),
-                getEnv("CHATGLM_APIKEY")
+                getEnv("CHATGLM_APIKEY"),
+                getEnv("CHATGLM_APIHOST")
         );
+
+//        GitCommand gitCommand = new GitCommand(
+//                github_review_url,
+//                github_token,
+//                github_author,
+//                github_branch,
+//                github_project,
+//                github_message
+//        );
+//
+//        WeiXin weiXin = new WeiXin(
+//                weixin_appid,
+//                weixin_secret,
+//                wexin_touser,
+//                weixin_template_id
+//        );
+//
+//        IOpenAI chatGLM = new ChatGLM(
+//                chatglm_apiKey,
+//                chatglm_apiHost
+//        );
 
 
         OpenAiCodeReviewService openAiCodeReviewService = new OpenAiCodeReviewService(gitCommand, chatGLM, weiXin);
@@ -82,7 +102,7 @@ public class OpenAiCodeReview {
     public static String getEnv(String key) {
         String token = System.getenv(key);
         if (null == token || token.isEmpty()) {
-            throw new RuntimeException(key+":value is empty");
+            throw new RuntimeException(key + ":value is empty");
         }
         return token;
     }

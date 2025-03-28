@@ -29,9 +29,10 @@ public class ChatGLM implements IOpenAI {
     public ChatCompletionSyncDto getAiResponse(ChatCompletionDto chatCompletionDto) throws IOException {
         // 1. 生成token
         String token = BearerTokenUtils.getToken(apiKey);
+        System.out.println(token);
+        System.out.println(apiHost);
         // 2. 发送请求
         URL url = new URL(apiHost);
-        System.out.println(url);
         HttpsURLConnection httpsURLConnection = (HttpsURLConnection) url.openConnection();
         httpsURLConnection.setRequestMethod("POST");
         httpsURLConnection.setRequestProperty("Authorization", "Bearer " + token);
