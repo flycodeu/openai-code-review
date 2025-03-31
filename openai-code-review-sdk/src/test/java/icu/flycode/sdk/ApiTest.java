@@ -5,13 +5,13 @@ import icu.flycode.sdk.domain.models.ChatCompletionSyncResponse;
 import icu.flycode.sdk.domain.models.Message;
 import icu.flycode.sdk.utils.BearerTokenUtils;
 import icu.flycode.sdk.utils.WXAccessTokenUtils;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.junit.Test;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -112,6 +112,53 @@ public class ApiTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Test
+    public void testGetGitConfig() throws Exception {
+        // 1. 作者名
+        String author = getGitInfo("%an");
+        System.out.println("Author: " + author);
+        // 2. 日期
+        String date = getGitInfo("%cd");
+        System.out.println("Date: " + date);
+        // 3. 描述
+        String description = getGitInfo("%s");
+        System.out.println("Description: " + description);
+        // 4. 哈希值，用于获取提交代码
+        String hashCode = getGitInfo("%h");
+        System.out.println("Hash Code: " + hashCode);
+
+        // 5. 获取提交代码
+        String diffCode = getDiffCode(hashCode);
+        System.out.println(diffCode);
+    }
+
+
+    public String getGitInfo(String tags) throws IOException {
+        ProcessBuilder logProcessBuilder = new ProcessBuilder("git", "log", "-1", "--pretty=format:" + tags);
+        logProcessBuilder.directory(new File("."));
+        Process logProcess = logProcessBuilder.start();
+        BufferedReader logReader = new BufferedReader(new InputStreamReader(logProcess.getInputStream()));
+        return logReader.readLine();
+    }
+
+    public String getDiffCode(String lastCommitHash) throws Exception {
+        ProcessBuilder diffProcessBuilder = new ProcessBuilder("git", "diff", lastCommitHash + "^", lastCommitHash);
+        diffProcessBuilder.directory(new File("."));
+        Process process = diffProcessBuilder.start();
+        BufferedReader diffReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line;
+        StringBuilder processOutput = new StringBuilder();
+        while ((line = diffReader.readLine()) != null) {
+            processOutput.append(line).append("\n");
+        }
+        int exitCode = process.waitFor();
+        if (exitCode != 0) {
+            throw new Exception("Diff process exited with code " + exitCode);
+        }
+        return processOutput.toString();
     }
 
 }
