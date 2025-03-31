@@ -26,7 +26,7 @@ jobs:
         run:  mkdir -p ./libs
 
       - name: Download openai-code-review-sdk
-        run: wget -0 ./libs/openai-code-review-sdk-1.0.jar https://github.com/flycodeu/openai-code-review/releases/download/v1.0/openai-code-review-sdk-1.0.jar
+        run: wget -O ./libs/openai-code-review-sdk-1.0.jar https://github.com/flycodeu/openai-code-review/releases/download/v1.0/openai-code-review-sdk-1.0.jar
       # maven构建
       - name: Build with Maven
         run: mvn clean install
