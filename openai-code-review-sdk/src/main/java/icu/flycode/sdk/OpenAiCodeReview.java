@@ -30,6 +30,9 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.SimpleFormatter;
 
+/**
+ * 主类
+ */
 public class OpenAiCodeReview {
     private static final Logger logger = LoggerFactory.getLogger(OpenAiCodeReview.class);
     // 微信配置
